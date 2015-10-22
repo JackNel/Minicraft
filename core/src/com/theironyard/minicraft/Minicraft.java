@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Minicraft extends ApplicationAdapter {
     final int WIDTH = 100;
     final int HEIGHT = 100;
-
     SpriteBatch batch;
     TextureRegion down, up, right, left, currentImage;
+    FitViewport viewport;
 
     float x = 0;
     float y = 0;
@@ -21,11 +22,12 @@ public class Minicraft extends ApplicationAdapter {
     float yv = 0;
     float time = 0;
 
-    final float MAX_VELOCITY = 100;
+    final float MAX_VELOCITY = 200;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Texture tiles = new Texture("tiles.png");
         TextureRegion[][] grid = TextureRegion.split(tiles, 16, 16);
@@ -42,6 +44,24 @@ public class Minicraft extends ApplicationAdapter {
         move();
         draw();
 
+        if (y < 0) {
+            y = 0;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (y > viewport.getScreenHeight() - 100) {
+            y = viewport.getScreenHeight() - 100;
+        }
+        if (x > viewport.getScreenWidth() - 100) {
+            x = viewport.getScreenWidth() - 100;
+        }
+    }
+
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
     }
 
     void move() {
@@ -61,8 +81,8 @@ public class Minicraft extends ApplicationAdapter {
         x += xv * Gdx.graphics.getDeltaTime();
         y += yv * Gdx.graphics.getDeltaTime();
 
-        xv *= 0.8;
-        yv *= 0.8;
+        xv *= 0.7;
+        yv *= 0.7;
     }
 
     void draw() {
