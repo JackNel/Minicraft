@@ -2,6 +2,7 @@ package com.theironyard.minicraft;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,9 +17,14 @@ public class Minicraft extends ApplicationAdapter {
 
     float x = 0;
     float y = 0;
+    float xv = 0;
+    float yv = 0;
+    float time = 0;
+
+    final float MAX_VELOCITY = 100;
 
     @Override
-    public void create () {
+    public void create() {
         batch = new SpriteBatch();
 
         Texture tiles = new Texture("tiles.png");
@@ -31,12 +37,60 @@ public class Minicraft extends ApplicationAdapter {
     }
 
     @Override
-    public void render () {
-        Gdx.gl.glClearColor(0, 0.5f, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void render() {
+        move();
+        draw();
 
-        batch.begin();
+    }
+
+    void move() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            yv = MAX_VELOCITY;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            yv = MAX_VELOCITY * -1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xv = MAX_VELOCITY;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xv = MAX_VELOCITY * -1;
+        }
+
+        x += xv * Gdx.graphics.getDeltaTime();
+        y += yv * Gdx.graphics.getDeltaTime();
+
+        xv *= 0.9;
+        yv *= 0.9;
+    }
+
+    void draw() {
+    time += Gdx.graphics.getDeltaTime();
+
+    TextureRegion img;
+    if (y > 0) {
+        img = up;
+    }
+
+    Gdx.gl.glClearColor(0,0.5f,0,1);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+    batch.begin();
+    if (Math.round(yv) > 0) {
+        batch.draw(up, x, y, WIDTH, HEIGHT);
+    }
+    else if (Math.round(yv) < 0) {
         batch.draw(down, x, y, WIDTH, HEIGHT);
-        batch.end();
+    }
+    else if (Math.round(xv) > 0) {
+        batch.draw(right, x, y, WIDTH, HEIGHT);
+    }
+    else if (Math.round(xv) < 0) {
+        batch.draw(left, x, y, WIDTH, HEIGHT);
+    }
+    else {
+
+    }
+    batch.end();
     }
 }
