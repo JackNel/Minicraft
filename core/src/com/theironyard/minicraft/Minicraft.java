@@ -13,7 +13,7 @@ public class Minicraft extends ApplicationAdapter {
     final int HEIGHT = 100;
 
     SpriteBatch batch;
-    TextureRegion down, up, right, left;
+    TextureRegion down, up, right, left, currentImage;
 
     float x = 0;
     float y = 0;
@@ -34,6 +34,7 @@ public class Minicraft extends ApplicationAdapter {
         right = grid[6][3];
         left = new TextureRegion(right);
         left.flip(true, false);
+        currentImage = down;
     }
 
     @Override
@@ -60,37 +61,30 @@ public class Minicraft extends ApplicationAdapter {
         x += xv * Gdx.graphics.getDeltaTime();
         y += yv * Gdx.graphics.getDeltaTime();
 
-        xv *= 0.9;
-        yv *= 0.9;
+        xv *= 0.8;
+        yv *= 0.8;
     }
 
     void draw() {
-    time += Gdx.graphics.getDeltaTime();
+        time += Gdx.graphics.getDeltaTime();
 
-    TextureRegion img;
-    if (y > 0) {
-        img = up;
-    }
+        Gdx.gl.glClearColor(0,0.5f,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    Gdx.gl.glClearColor(0,0.5f,0,1);
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-    batch.begin();
-    if (Math.round(yv) > 0) {
-        batch.draw(up, x, y, WIDTH, HEIGHT);
-    }
-    else if (Math.round(yv) < 0) {
-        batch.draw(down, x, y, WIDTH, HEIGHT);
-    }
-    else if (Math.round(xv) > 0) {
-        batch.draw(right, x, y, WIDTH, HEIGHT);
-    }
-    else if (Math.round(xv) < 0) {
-        batch.draw(left, x, y, WIDTH, HEIGHT);
-    }
-    else {
-
-    }
-    batch.end();
+        batch.begin();
+        if (Math.round(yv) > 0) {
+            currentImage = up;
+        }
+        else if (Math.round(yv) < 0) {
+            currentImage = down;
+        }
+        else if (Math.round(xv) > 0) {
+            currentImage = right;
+        }
+        else if (Math.round(xv) < 0) {
+            currentImage = left;
+        }
+        batch.draw(currentImage, x, y, WIDTH, HEIGHT);
+        batch.end();
     }
 }
