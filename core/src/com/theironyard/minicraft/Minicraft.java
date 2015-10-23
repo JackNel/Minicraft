@@ -3,7 +3,6 @@ package com.theironyard.minicraft;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +21,6 @@ public class Minicraft extends ApplicationAdapter {
     SpriteBatch batch;
     TextureRegion down, up, right, left, currentImage;
     FitViewport viewport;
-    Texture img;
     TiledMap tiledMap;
     OrthographicCamera camera;
     TiledMapRenderer renderer;
