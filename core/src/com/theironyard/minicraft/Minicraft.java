@@ -3,18 +3,29 @@ package com.theironyard.minicraft;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Minicraft extends ApplicationAdapter {
-    final int WIDTH = 100;
-    final int HEIGHT = 100;
+    final int WIDTH = 20;
+    final int HEIGHT = 20;
     SpriteBatch batch;
     TextureRegion down, up, right, left, currentImage;
     FitViewport viewport;
+    Texture img;
+    TiledMap tiledMap;
+    OrthographicCamera camera;
+    TiledMapRenderer renderer;
 
     float x = 0;
     float y = 0;
@@ -28,6 +39,12 @@ public class Minicraft extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        camera = new OrthographicCamera();
+
+        camera.update();
+        tiledMap = new TmxMapLoader().load("level1.tmx");
+        renderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         Texture tiles = new Texture("tiles.png");
         TextureRegion[][] grid = TextureRegion.split(tiles, 16, 16);
@@ -54,13 +71,14 @@ public class Minicraft extends ApplicationAdapter {
         if (y > viewport.getWorldHeight() - 100) {
             y = viewport.getWorldHeight() - 100;
         }
-        if (x > viewport.getWorldWidth() - 100) {
-            x = viewport.getWorldWidth() - 100;
+        if (x > viewport.getWorldWidth() - 260) {
+            x = viewport.getWorldWidth() - 260;
         }
     }
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        camera.setToOrtho(false, width/3, height/3);
     }
 
     void move() {
@@ -89,6 +107,21 @@ public class Minicraft extends ApplicationAdapter {
 
         Gdx.gl.glClearColor(0,0.5f,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        Rectangle cameraRect = new Rectangle();
+        cameraRect.setCenter(x, y);
+        cameraRect.setSize(camera.viewportWidth, camera.viewportHeight);
+        Rectangle mapRect = new Rectangle(0, 0, 4800, 6400);
+        if (mapRect.contains(cameraRect)) {
+            camera.position.x = x;
+            camera.position.y = y;
+            camera.update();
+        }
+
+        renderer.setView(camera);
+        renderer.render();
+
+        batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         if (Math.round(yv) > 0) {
