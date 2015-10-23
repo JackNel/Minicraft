@@ -41,6 +41,7 @@ public class Minicraft extends ApplicationAdapter {
 
     @Override
     public void render() {
+        resize(viewport.getScreenWidth(), viewport.getScreenHeight());
         move();
         draw();
 
@@ -50,15 +51,13 @@ public class Minicraft extends ApplicationAdapter {
         if (x < 0) {
             x = 0;
         }
-        if (y > viewport.getScreenHeight() - 100) {
-            y = viewport.getScreenHeight() - 100;
+        if (y > viewport.getWorldHeight() - 100) {
+            y = viewport.getWorldHeight() - 100;
         }
-        if (x > viewport.getScreenWidth() - 100) {
-            x = viewport.getScreenWidth() - 100;
+        if (x > viewport.getWorldWidth() - 100) {
+            x = viewport.getWorldWidth() - 100;
         }
     }
-
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
