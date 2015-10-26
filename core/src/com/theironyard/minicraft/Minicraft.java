@@ -76,7 +76,7 @@ public class Minicraft extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        camera.setToOrtho(false, width/3, height/3);
+        camera.setToOrtho(false, width/4, height/4);
     }
 
     void move() {
@@ -109,12 +109,12 @@ public class Minicraft extends ApplicationAdapter {
         Rectangle cameraRect = new Rectangle();
         cameraRect.setCenter(x, y);
         cameraRect.setSize(camera.viewportWidth, camera.viewportHeight);
-        Rectangle mapRect = new Rectangle(0, 0, 4800, 6400);
-        if (mapRect.contains(cameraRect)) {
+        //Rectangle mapRect = new Rectangle(0, 0, 4800, 6400);
+       // if (mapRect.contains(cameraRect)) {
             camera.position.x = x;
             camera.position.y = y;
             camera.update();
-        }
+       // }
 
         renderer.setView(camera);
         renderer.render();
